@@ -3,6 +3,7 @@ const app =express();
 const mongoose=require("mongoose");
 const Listing =require("./models/listing.js");
 const path=require("path");
+const ejsmate=require("ejs-mate");
 main()
 .then(()=>{console.log("connection succesful");})
 .catch(err => console.log(err));
@@ -15,11 +16,14 @@ async function main() {
 app.listen(8080,()=>{
     console.log("server is listening to port 8080");
 });
+
 const methodoverride=require("method-override");
 app.use(methodoverride("_method"));
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
+app.engine('ejs', ejsmate);
 app.use(express.urlencoded({extended:true}));
+app.use(express.static(path.join(__dirname,"/public")));
 app.get("/",(req,res)=>{
     res.send("hi, i am root");
 });
