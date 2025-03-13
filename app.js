@@ -5,9 +5,13 @@ const path = require("path");
 const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
 const ExpressError = require("./utils/expressError.js");
+const session=require("express-session");
 
+const flash=require("connect-flash");
 const listingRoutes = require("./routes/listing.js");
 const reviewRoutes = require("./routes/review.js");
+
+
 
 mongoose.connect("mongodb://127.0.0.1:27017/wanderlust")
     .then(() => console.log("MongoDB Connected"))
@@ -20,13 +24,39 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(methodOverride("_method"));
 
-// Use the routes
-app.use("/listings", listingRoutes);
-app.use("/listings/:id/reviews", reviewRoutes);
+
+
+
+const sessionOptions={
+    secret:"mysecret",
+    resave:false,
+    saveUninitialized: true,
+    cookie:{
+       expires:Date.now()+1000*60*60*24*7,
+       maxAge: 1000*60*60*24*7,//persist till 7 days 
+       httpOnly:true 
+    },
+
+};
 
 app.get("/", (req, res) => {
     res.send("Hi, I am root");
 });
+
+app.use(session(sessionOptions));
+app.use(flash());
+
+
+app.use((req,res,next)=>{
+    res.locals.success=req.flash("success");
+    res.locals.error=req.flash("error");
+    next();
+});
+// Use the routes
+app.use("/listings", listingRoutes);
+app.use("/listings/:id/reviews", reviewRoutes);
+
+
 
 // 404 error handling
 app.all("*", (req, res, next) => {
