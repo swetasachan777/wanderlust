@@ -3,7 +3,7 @@
 <div class="col-8 offset-2">
 <h1>Edit This Listing</h1>
 
-<form method="POST" action="/listings/<%= listing._id %>?_method=PUT" class="container mt-4 needs-validation" novalidate>
+<form method="POST" action="/listings/<%= listing._id %>?_method=PUT" class="container mt-4 needs-validation" novalidate enctype="multipart/form-data">
     <!-- Title Field -->
     <div class="mb-3">
         <label for="title" class="form-label">Title</label>
@@ -25,11 +25,22 @@
         <div class="invalid-feedback">Please provide a price.</div>
     </div>
 
+
+    <div class="mb-3">
+       Original Listing Image <br>
+       <img src="<%= original %>" alt="Listing Image" style="max-width: 250px; height: auto; border-radius: 10px;">
+
+        
+    </div>
+
     <!-- Image URL Field -->
     <div class="mb-3">
-        <label for="image" class="form-label">Image URL</label>
-        <input id="image" name="listing[image]" value="<%= listing.image %>" type="text" class="form-control">
-        <div class="invalid-feedback">Please provide a valid image URL (if applicable).</div>
+        <label for="image" class="form-label">Upload new Image</label>
+        <input  name="listing[image]"
+         type="file" 
+         class="form-control"
+          >
+        
     </div>
 
     <!-- Location Field -->
